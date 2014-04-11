@@ -10,7 +10,12 @@ require_once 'modules/admin/models/ServerPlugin.php';
 */
 class PluginISPManager extends ServerPlugin
 {
-    public $usesPackageName = true;
+    public $features = array(
+        'packageName' => true,
+        'testConnection' => false,
+        'showNameservers' => true
+    );
+
     /*****************************************************************/
     // function getVariables - required function
     /*****************************************************************/
