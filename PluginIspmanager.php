@@ -25,126 +25,126 @@ class PluginISPManager extends ServerPlugin
 
 
         $variables = array (
-                /*T*/"Name"/*/T*/ => array (
+                lang("Name") => array (
                                     "type"=>"hidden",
-                                    "description"=>/*T*/"Used By CE to show plugin - must match how you call the action function names"/*/T*/,
+                                    "description"=>lang("Used By CE to show plugin - must match how you call the action function names"),
                                     "value"=>"ISPmanager"
                                    ),
-                /*T*/"Description"/*/T*/ => array (
+                lang("Description") => array (
                                     "type"=>"hidden",
-                                    "description"=>/*T*/"Description viewable by admin in server settings"/*/T*/,
-                                    "value"=>/*T*/"ISPmanager Panel Integration"/*/T*/
+                                    "description"=>lang("Description viewable by admin in server settings"),
+                                    "value"=>lang("ISPmanager Panel Integration")
                                    ),
-                /*T*/"Username"/*/T*/ => array (
+                lang("Username") => array (
                                     "type"=>"text",
-                                    "description"=>/*T*/"Username used to connect to server"/*/T*/,
+                                    "description"=>lang("Username used to connect to server"),
                                     "value"=>""
                                    ),
-                /*T*/"Password"/*/T*/ => array (
+                lang("Password") => array (
                                     "type"=>"password",
-                                    "description"=>/*T*/"Password used to connect to server"/*/T*/,
+                                    "description"=>lang("Password used to connect to server"),
                                     "value"=>"",
                                     "encryptable"=>true
                                    ),
-                /*T*/"Actions"/*/T*/ => array (
+                lang("Actions") => array (
                                     "type"=>"hidden",
-                                    "description"=>/*T*/"Current actions that are active for this plugin per server"/*/T*/,
+                                    "description"=>lang("Current actions that are active for this plugin per server"),
                                     "value"=>"Create,Delete,Suspend,UnSuspend"
                                    ),
-                /*T*/'package_vars'/*/T*/  => array(
+                lang('package_vars')  => array(
                                     'type'          => 'hidden',
-                                    'description'   => /*T*/'Whether package settings are set'/*/T*/,
+                                    'description'   => lang('Whether package settings are set'),
                                     'value'         => '0',
                                    ),
-                /*T*/'package_vars_values'/*/T*/ => array(
+                lang('package_vars_values') => array(
                                     'type'          => 'hidden',
-                                    'description'   => /*T*/'Hosting account parameters'/*/T*/,
+                                    'description'   => lang('Hosting account parameters'),
                                     'value'         => array(
                                                             'ftplimit'       => array(
                                                                                    'type'           => 'text',
-                                                                                   'description'    => /*T*/'Maximum number of ftp-users'/*/T*/,
+                                                                                   'description'    => lang('Maximum number of ftp-users'),
                                                                                    'value'          => '',
                                                                                 ),
                                                             'maillimit'           => array(
                                                                                    'type'           => 'text',
-                                                                                   'description'    => /*T*/'Maximum number of mail boxes'/*/T*/,
+                                                                                   'description'    => lang('Maximum number of mail boxes'),
                                                                                    'value'          => '1',
                                                                                 ),
                                                             'domainlimit'    => array(
                                                                                    'type'           => 'text',
-                                                                                   'description'    => /*T*/'Maximum number of domain name zones'/*/T*/,
+                                                                                   'description'    => lang('Maximum number of domain name zones'),
                                                                                    'value'          => '',
                                                                                 ),
                                                             'disklimit'    => array(
                                                                                    'type'           => 'text',
-                                                                                   'description'    => /*T*/'Disk space (in bytes, leave empty for unlimited)'/*/T*/,
+                                                                                   'description'    => lang('Disk space (in bytes, leave empty for unlimited)'),
                                                                                    'value'          => '',
                                                                                 ),
                                                             'webdomainlimit'   => array(
                                                                                    'type'           => 'text',
-                                                                                   'description'    => /*T*/'Maximum number of web sites'/*/T*/,
+                                                                                   'description'    => lang('Maximum number of web sites'),
                                                                                    'value'          => '',
                                                                                 ),
                                                             'maildomainlimit'        => array(
                                                                                    'type'           => 'text',
-                                                                                   'description'    => /*T*/'Maximum number of mail domains'/*/T*/,
+                                                                                   'description'    => lang('Maximum number of mail domains'),
                                                                                    'value'          => '',
                                                                                 ),
                                                             'baselimit'        => array(
                                                                                    'type'           => 'text',
-                                                                                   'description'    => /*T*/'Maximum number of databases'/*/T*/,
+                                                                                   'description'    => lang('Maximum number of databases'),
                                                                                    'value'          => '',
                                                                                 ),
                                                             'baseuserlimit'       => array(
                                                                                    'type'           => 'text',
-                                                                                   'description'    => /*T*/'Maximum number of database users'/*/T*/,
+                                                                                   'description'    => lang('Maximum number of database users'),
                                                                                    'value'          => '',
                                                                                 ),
                                                             'bandwidthlimit'    => array(
                                                                                    'type'           => 'text',
-                                                                                   'description'    => /*T*/'Traffic quota (in kbytes)'/*/T*/,
+                                                                                   'description'    => lang('Traffic quota (in kbytes)'),
                                                                                    'value'          => '',
                                                                                 ),
                                                             'ssl'           => array(
                                                                                     'type'          => 'yesno',
-                                                                                    'description'   => /*T*/'SSL support'/*/T*/,
+                                                                                    'description'   => lang('SSL support'),
                                                                                     'value'         => '0',
                                                                                 ),
                                                             'shell'         => array(
                                                                                     'type'          => 'yesno',
-                                                                                    'description'   => /*T*/'System shell'/*/T*/,
+                                                                                    'description'   => lang('System shell'),
                                                                                     'value'         => '',
                                                                                 ),
                                                             'phpmod'           => array(
                                                                                     'type'          => 'yesno',
-                                                                                    'description'   => /*T*/'PHP as Apache Module support'/*/T*/,
+                                                                                    'description'   => lang('PHP as Apache Module support'),
                                                                                     'value'         => '0',
                                                                                 ),
                                                             'phpcgi'           => array(
                                                                                     'type'          => 'yesno',
-                                                                                    'description'   => /*T*/'PHP as CGI support'/*/T*/,
+                                                                                    'description'   => lang('PHP as CGI support'),
                                                                                     'value'         => '0',
                                                                                 ),
                                                             'phpfcgi'           => array(
                                                                                     'type'          => 'yesno',
-                                                                                    'description'   => /*T*/'PHP as FastCGI support'/*/T*/,
+                                                                                    'description'   => lang('PHP as FastCGI support'),
                                                                                     'value'         => '0',
                                                                                 ),
                                                             'ssi'           => array(
                                                                                     'type'          => 'yesno',
-                                                                                    'description'   => /*T*/'SSI support'/*/T*/,
+                                                                                    'description'   => lang('SSI support'),
                                                                                     'value'         => '0',
                                                                                 ),
                                                             'cgi'           => array(
                                                                                     'type'          => 'yesno',
-                                                                                    'description'   => /*T*/'CGI support'/*/T*/,
+                                                                                    'description'   => lang('CGI support'),
                                                                                     'value'         => '0',
                                                                                 ),
                                         ),
                     ),
-                /*T*/'package_addons'/*/T*/ => array(
+                lang('package_addons') => array(
                     'type'          => 'hidden',
-                    'description'   => /*T*/'Supported signup addons variables'/*/T*/,
+                    'description'   => lang('Supported signup addons variables'),
                     'value'         => array(
                         'DISKSPACE', 'BANDWIDTH', 'SSH_ACCESS', 'SSL'
                     ),
