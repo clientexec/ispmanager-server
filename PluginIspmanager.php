@@ -1,190 +1,175 @@
 <?php
 
-// Please send all bugreports to support@ispsystem.com
-// with "ClientExec integration plugin" mark.
-
 require_once 'plugins/server/ispmanager/helper.ispmanager.php';
 require_once 'modules/admin/models/ServerPlugin.php';
-/**
-* @package Plugins
-*/
+require_once 'library/CE/NE_Network.php';
+
 class PluginISPManager extends ServerPlugin
 {
-    public $features = array(
+    public $settings;
+    public $features = [
         'packageName' => true,
         'testConnection' => false,
         'showNameservers' => true,
         'upgrades' => true
-    );
+    ];
 
-    /*****************************************************************/
-    // function getVariables - required function
-    /*****************************************************************/
-
-    function getVariables()
+    public function getVariables()
     {
-        /* Specification
-              itemkey     - used to identify variable in your other functions
-              type        - text,textarea,yesno,password
-              description - description of the variable, displayed in ClientExec
-              encryptable - used to indicate the variable's value must be encrypted in the database
-        */
-
-
-        $variables = array (
-                lang("Name") => array (
-                                    "type"=>"hidden",
-                                    "description"=>lang("Used By CE to show plugin - must match how you call the action function names"),
-                                    "value"=>"ISPmanager"
-                                   ),
-                lang("Description") => array (
-                                    "type"=>"hidden",
-                                    "description"=>lang("Description viewable by admin in server settings"),
-                                    "value"=>lang("ISPmanager Panel Integration")
-                                   ),
-                lang("Username") => array (
-                                    "type"=>"text",
-                                    "description"=>lang("Username used to connect to server"),
-                                    "value"=>""
-                                   ),
-                lang("Password") => array (
-                                    "type"=>"password",
-                                    "description"=>lang("Password used to connect to server"),
-                                    "value"=>"",
-                                    "encryptable"=>true
-                                   ),
-                lang("Actions") => array (
-                                    "type"=>"hidden",
-                                    "description"=>lang("Current actions that are active for this plugin per server"),
-                                    "value"=>"Create,Delete,Suspend,UnSuspend"
-                                   ),
-                lang('package_vars')  => array(
-                                    'type'          => 'hidden',
-                                    'description'   => lang('Whether package settings are set'),
-                                    'value'         => '0',
-                                   ),
-                lang('package_vars_values') => array(
-                                    'type'          => 'hidden',
-                                    'description'   => lang('Hosting account parameters'),
-                                    'value'         => array(
-                                                            'ftplimit'       => array(
-                                                                                   'type'           => 'text',
-                                                                                   'description'    => lang('Maximum number of ftp-users'),
-                                                                                   'value'          => '',
-                                                                                ),
-                                                            'maillimit'           => array(
-                                                                                   'type'           => 'text',
-                                                                                   'description'    => lang('Maximum number of mail boxes'),
-                                                                                   'value'          => '1',
-                                                                                ),
-                                                            'domainlimit'    => array(
-                                                                                   'type'           => 'text',
-                                                                                   'description'    => lang('Maximum number of domain name zones'),
-                                                                                   'value'          => '',
-                                                                                ),
-                                                            'disklimit'    => array(
-                                                                                   'type'           => 'text',
-                                                                                   'description'    => lang('Disk space (in bytes, leave empty for unlimited)'),
-                                                                                   'value'          => '',
-                                                                                ),
-                                                            'webdomainlimit'   => array(
-                                                                                   'type'           => 'text',
-                                                                                   'description'    => lang('Maximum number of web sites'),
-                                                                                   'value'          => '',
-                                                                                ),
-                                                            'maildomainlimit'        => array(
-                                                                                   'type'           => 'text',
-                                                                                   'description'    => lang('Maximum number of mail domains'),
-                                                                                   'value'          => '',
-                                                                                ),
-                                                            'baselimit'        => array(
-                                                                                   'type'           => 'text',
-                                                                                   'description'    => lang('Maximum number of databases'),
-                                                                                   'value'          => '',
-                                                                                ),
-                                                            'baseuserlimit'       => array(
-                                                                                   'type'           => 'text',
-                                                                                   'description'    => lang('Maximum number of database users'),
-                                                                                   'value'          => '',
-                                                                                ),
-                                                            'bandwidthlimit'    => array(
-                                                                                   'type'           => 'text',
-                                                                                   'description'    => lang('Traffic quota (in kbytes)'),
-                                                                                   'value'          => '',
-                                                                                ),
-                                                            'ssl'           => array(
-                                                                                    'type'          => 'yesno',
-                                                                                    'description'   => lang('SSL support'),
-                                                                                    'value'         => '0',
-                                                                                ),
-                                                            'shell'         => array(
-                                                                                    'type'          => 'yesno',
-                                                                                    'description'   => lang('System shell'),
-                                                                                    'value'         => '',
-                                                                                ),
-                                                            'phpmod'           => array(
-                                                                                    'type'          => 'yesno',
-                                                                                    'description'   => lang('PHP as Apache Module support'),
-                                                                                    'value'         => '0',
-                                                                                ),
-                                                            'phpcgi'           => array(
-                                                                                    'type'          => 'yesno',
-                                                                                    'description'   => lang('PHP as CGI support'),
-                                                                                    'value'         => '0',
-                                                                                ),
-                                                            'phpfcgi'           => array(
-                                                                                    'type'          => 'yesno',
-                                                                                    'description'   => lang('PHP as FastCGI support'),
-                                                                                    'value'         => '0',
-                                                                                ),
-                                                            'ssi'           => array(
-                                                                                    'type'          => 'yesno',
-                                                                                    'description'   => lang('SSI support'),
-                                                                                    'value'         => '0',
-                                                                                ),
-                                                            'cgi'           => array(
-                                                                                    'type'          => 'yesno',
-                                                                                    'description'   => lang('CGI support'),
-                                                                                    'value'         => '0',
-                                                                                ),
-                                        ),
-                    ),
-                lang('package_addons') => array(
-                    'type'          => 'hidden',
-                    'description'   => lang('Supported signup addons variables'),
-                    'value'         => array(
-                        'DISKSPACE', 'BANDWIDTH', 'SSH_ACCESS', 'SSL'
-                    ),
-                )
-
-        );
+        $variables = [
+            lang("Name") => [
+                "type" => "hidden",
+                "description" => lang("Used By CE to show plugin - must match how you call the action function names"),
+                "value" => "ISPmanager"
+            ],
+            lang("Description") => [
+                "type" => "hidden",
+                "description" => lang("Description viewable by admin in server settings"),
+                "value" => lang("ISPmanager Panel Integration")
+            ],
+            lang("Username") => [
+                "type" => "text",
+                "description" => lang("Username used to connect to server"),
+                "value" => ""
+            ],
+            lang("Password") => [
+                "type" => "password",
+                "description" => lang("Password used to connect to server"),
+                "value" => "",
+                "encryptable" => true
+            ],
+            lang('Port') => [
+                'type' => 'text',
+                'description' => lang('Port used to connect to server'),
+                'value' => '1500'
+            ],
+            lang("Actions") => [
+                "type" => "hidden",
+                "description" => lang("Current actions that are active for this plugin per server"),
+                "value" => "Create,Delete,Suspend,UnSuspend"
+            ],
+            lang('package_vars')  => [
+                'type'          => 'hidden',
+                'description'   => lang('Whether package settings are set'),
+                'value'         => '0',
+            ],
+            lang('package_vars_values') => [
+                'type'          => 'hidden',
+                'description'   => lang('Hosting account parameters'),
+                'value'         => [
+                    'ftplimit'       => [
+                        'type'           => 'text',
+                        'description'    => lang('Maximum number of ftp-users'),
+                        'value'          => '',
+                    ],
+                    'maillimit'           => [
+                        'type'           => 'text',
+                        'description'    => lang('Maximum number of mail boxes'),
+                        'value'          => '1',
+                    ],
+                    'domainlimit'    => [
+                        'type'           => 'text',
+                        'description'    => lang('Maximum number of domain name zones'),
+                        'value'          => '',
+                    ],
+                    'disklimit'    => [
+                        'type'           => 'text',
+                        'description'    => lang('Disk space (in bytes, leave empty for unlimited)'),
+                        'value'          => '',
+                    ],
+                    'webdomainlimit'   => [
+                        'type'           => 'text',
+                        'description'    => lang('Maximum number of web sites'),
+                        'value'          => '',
+                    ],
+                    'maildomainlimit'        => [
+                        'type'           => 'text',
+                        'description'    => lang('Maximum number of mail domains'),
+                        'value'          => '',
+                    ],
+                    'baselimit'        => [
+                        'type'           => 'text',
+                        'description'    => lang('Maximum number of databases'),
+                        'value'          => '',
+                    ],
+                    'baseuserlimit'       => [
+                        'type'           => 'text',
+                        'description'    => lang('Maximum number of database users'),
+                        'value'          => '',
+                    ],
+                    'bandwidthlimit'    => [
+                        'type'           => 'text',
+                        'description'    => lang('Traffic quota (in kbytes)'),
+                        'value'          => '',
+                    ],
+                    'ssl'           => [
+                        'type'          => 'yesno',
+                        'description'   => lang('SSL support'),
+                        'value'         => '0',
+                    ],
+                    'shell'         => [
+                        'type'          => 'yesno',
+                        'description'   => lang('System shell'),
+                        'value'         => '',
+                    ],
+                    'phpmod'           => [
+                        'type'          => 'yesno',
+                        'description'   => lang('PHP as Apache Module support'),
+                        'value'         => '0',
+                    ],
+                    'phpcgi'           => [
+                        'type'          => 'yesno',
+                        'description'   => lang('PHP as CGI support'),
+                        'value'         => '0',
+                    ],
+                    'phpfcgi'           => [
+                        'type'          => 'yesno',
+                        'description'   => lang('PHP as FastCGI support'),
+                        'value'         => '0',
+                    ],
+                    'ssi'           => [
+                        'type'          => 'yesno',
+                        'description'   => lang('SSI support'),
+                        'value'         => '0',
+                    ],
+                    'cgi'           => [
+                        'type'          => 'yesno',
+                        'description'   => lang('CGI support'),
+                        'value'         => '0',
+                    ],
+                ],
+            ],
+            lang('package_addons') => [
+                'type'          => 'hidden',
+                'description'   => lang('Supported signup addons variables'),
+                'value'         => [
+                    'DISKSPACE', 'BANDWIDTH', 'SSH_ACCESS', 'SSL'
+                ],
+            ]
+        ];
         return $variables;
     }
 
-    function _ISPRequest($args, $req, $outtype = 'xml')
+    public function sendRequest($args, $req, $outtype = 'xml')
     {
-        require_once 'library/CE/NE_Network.php';
-
-        $ret = "";
-        $url = "https://".$args['server']['variables']['ServerHostName']."/manager/ispmgr?authinfo=".$args['server']['variables']['plugin_ispmanager_Username'].":".$args['server']['variables']['plugin_ispmanager_Password']."&out=".$outtype."&".$req;
-        $ret = NE_Network::curlRequest($this->settings, $url, '', '', true, false);
-        return $ret;
+        $url = "https://" . $args['server']['variables']['ServerHostName'] . ':' . $args['server']['variables']['plugin_ispmanager_Port'] . "/manager/ispmgr?authinfo=" . $args['server']['variables']['plugin_ispmanager_Username'] . ":" . $args['server']['variables']['plugin_ispmanager_Password'] . "&out=" . $outtype . "&" . $req;
+        return NE_Network::curlRequest($this->settings, $url, '', '', true, false);
     }
 
-    function _ISPRestart($args)
+    public function restart($args)
     {
         $res = false;
-        $result = $this->_ISPRequest($args, "func=restart", "text");
+        $result = $this->sendRequest($args, "func=restart", "text");
         if ($result == "OK ") {
             $res = true;
         }
         return $res;
     }
 
-    function _ISPCheckPreset($args, $preset)
+    public function checkPreset($args, $preset)
     {
         $preset_found = false;
-        $ret = $this->_ISPRequest($args, "func=preset", "xml");
+        $ret = $this->sendRequest($args, "func=preset", "xml");
         $objXML = new xml2Array();
         $arrOutput = $objXML->parse($ret);
         if (isset($arrOutput[0]['children'])) {
@@ -196,27 +181,26 @@ class PluginISPManager extends ServerPlugin
                     if ($elem['name'] == "NAME" && $elem['tagData'] == $preset) {
                         $preset_found = true;
                     }
-        //        echo print_r($elem);
                 }
             }
         }
         // Making Preset if not exists
         if (!$preset_found) {
-            $preset_found = $this->_ISPCreatePreset($args, $preset);
+            $preset_found = $this->createPreset($args, $preset);
         }
 
         return $preset_found;
     }
 
-    function _ISPCreatePreset($args, $name)
+    public function createPreset($args, $name)
     {
         $ssi = "off";
         $ssl = "off";
         $shell = "off";
         $cgi = "off";
         $phpmod = "off";
-        $phpcgi="off";
-        $phpfcgi="off";
+        $phpcgi = "off";
+        $phpfcgi = "off";
         $ptype = "user";
         $pv = $args['package']['variables'];
         $res = false;
@@ -241,8 +225,8 @@ class PluginISPManager extends ServerPlugin
         if (isset($pv['phpfcgi']) && $pv['phpfcgi'] == 1) {
             $phpfcgi = "on";
         }
-        $q = "name=".$name."&ptype=".$ptype."&disklimit=".$pv['disklimit']."&ftplimit=".$pv['ftplimit']."&maillimit=".$pv['maillimit']."&domainlimit=".$pv['domainlimit']."&webdomainlimit=".$pv['webdomainlimit']."&maildomainlimit=".$pv['maildomainlimit']."&baselimit=".$pv['baselimit']."&baseuserlimit=".$pv['baseuserlimit']."&bandwidthlimit=".$pv['bandwidthlimit']."&ssi=".$ssi."&ssl=".$ssl."&shell=".$shell."&cgi=".$cgi."&phpfcgi=".$phpfcgi."&phpcgi=".$phpcgi."&phpmod=".$phpmod."&func=preset.edit&elid=&sok=ok&suok=++++Ok++++";
-        $result = $this->_ISPRequest($args, $q, "text");
+        $q = "name=" . $name . "&ptype=" . $ptype . "&disklimit=" . $pv['disklimit'] . "&ftplimit=" . $pv['ftplimit'] . "&maillimit=" . $pv['maillimit'] . "&domainlimit=" . $pv['domainlimit'] . "&webdomainlimit=" . $pv['webdomainlimit'] . "&maildomainlimit=" . $pv['maildomainlimit'] . "&baselimit=" . $pv['baselimit'] . "&baseuserlimit=" . $pv['baseuserlimit'] . "&bandwidthlimit=" . $pv['bandwidthlimit'] . "&ssi=" . $ssi . "&ssl=" . $ssl . "&shell=" . $shell . "&cgi=" . $cgi . "&phpfcgi=" . $phpfcgi . "&phpcgi=" . $phpcgi . "&phpmod=" . $phpmod . "&func=preset.edit&elid=&sok=ok&suok=++++Ok++++";
+        $result = $this->sendRequest($args, $q, "text");
         if ($result == "OK ") {
             $res = true;
         } else {
@@ -252,16 +236,16 @@ class PluginISPManager extends ServerPlugin
     }
 
     //plugin function called after new account is activated ( approved )
-    function create($args)
+    public function create($args)
     {
-        if ($this->_ISPCheckPreset($args, $args['package']['name_on_server'])) {
+        if ($this->checkPreset($args, $args['package']['name_on_server'])) {
             $ssi = "off";
             $ssl = "off";
             $shell = "off";
             $cgi = "off";
             $phpmod = "off";
-            $phpcgi="off";
-            $phpfcgi="off";
+            $phpcgi = "off";
+            $phpfcgi = "off";
             $ptype = "user";
             $pv = $args['package_vars'];
             if (isset($args['package']['addons']['DISKSPACE'])) {
@@ -297,50 +281,46 @@ class PluginISPManager extends ServerPlugin
             if (isset($pv['phpfcgi']) && $pv['phpfcgi'] == 1) {
                 $phpfcgi = "on";
             }
-            $q = "name=".$args['package']['username']."&passwd=".$args['package']['password']."&confirm=".$args['package']['password']."&ptype=".$ptype."&domain=".$args['package']['domain_name']."&ip=".$args['package']['ip']."&preset=".$args['package']['name_on_server']."&disklimit=".$pv['disklimit']."&ftplimit=".$pv['ftplimit']."&maillimit=".$pv['maillimit']."&domainlimit=".$pv['domainlimit']."&webdomainlimit=".$pv['webdomainlimit']."&maildomainlimit=".$pv['maildomainlimit']."&baselimit=".$pv['baselimit']."&baseuserlimit=".$pv['baseuserlimit']."&bandwidthlimit=".$pv['bandwidthlimit']."&ssi=".$ssi."&ssl=".$ssl."&shell=".$shell."&cgi=".$cgi."&phpfcgi=".$phpfcgi."&phpcgi=".$phpcgi."&phpmod=".$phpmod."&func=user.edit&elid=&sok=ok&suok=++++Ok++++";
-            $result = $this->_ISPRequest($args, $q, "xml");
+            $q = "name=" . $args['package']['username'] . "&passwd=" . $args['package']['password'] . "&confirm=" . $args['package']['password'] . "&ptype=" . $ptype . "&domain=" . $args['package']['domain_name'] . "&ip=" . $args['package']['ip'] . "&preset=" . urlencode($args['package']['name_on_server']) . "&disklimit=" . $pv['disklimit'] . "&ftplimit=" . $pv['ftplimit'] . "&maillimit=" . $pv['maillimit'] . "&domainlimit=" . $pv['domainlimit'] . "&webdomainlimit=" . $pv['webdomainlimit'] . "&maildomainlimit=" . $pv['maildomainlimit'] . "&baselimit=" . $pv['baselimit'] . "&baseuserlimit=" . $pv['baseuserlimit'] . "&bandwidthlimit=" . $pv['bandwidthlimit'] . "&ssi=" . $ssi . "&ssl=" . $ssl . "&shell=" . $shell . "&cgi=" . $cgi . "&phpfcgi=" . $phpfcgi . "&phpcgi=" . $phpcgi . "&phpmod=" . $phpmod . "&func=user.edit&elid=&sok=ok&suok=++++Ok++++";
+            $result = $this->sendRequest($args, $q, "xml");
             $objXML = new xml2Array();
             $arrOutput = $objXML->parse($result);
             foreach ($arrOutput[0]['children'] as $el) {
                 if ($el['name'] == 'ERROR') {
-                    throw new CE_Exception("ISPManager error #".$el['attrs']['CODE']." in object \"".$el['attrs']['OBJ']."\"");
+                    throw new CE_Exception("ISPManager error #" . $el['attrs']['CODE'] . " in object \"" . $el['attrs']['OBJ'] . "\"");
                 }
-                if ($el['name'] == 'OK') {
-                    if ($el['tagData'] == 'restart') {
-                        return $this->_ISPRestart($args);
-                    }
+                if ($el['name'] == 'OK' && $el['tagData'] == 'restart') {
+                    return $this->restart($args);
                 }
             }
         }
         return false;
     }
 
-    function delete($args)
+    public function delete($args)
     {
-        $result = $this->_ISPRequest($args, "func=user.delete&elid=".$args['package']['username'], "xml");
+        $result = $this->sendRequest($args, "func=user.delete&elid=" . $args['package']['username'], "xml");
         $objXML = new xml2Array();
         $arrOutput = $objXML->parse($result);
         foreach ($arrOutput[0]['children'] as $el) {
-            if ($el['name'] == 'OK') {
-                if ($el['tagData'] == 'restart') {
-                    return $this->_ISPRestart($args);
-                }
+            if ($el['name'] == 'OK' && $el['tagData'] == 'restart') {
+                return $this->restart($args);
             }
         }
         return false;
     }
 
-    function update($args, $userPackage = null)
+    public function update($args, $userPackage = null)
     {
         $package = $args['CHANGE_PACKAGE'];
-        if ($this->_ISPCheckPreset($args, $package)) {
+        if ($this->checkPreset($args, $package)) {
             $ssi = "off";
             $ssl = "off";
             $shell = "off";
             $cgi = "off";
             $phpmod = "off";
-            $phpcgi="off";
-            $phpfcgi="off";
+            $phpcgi = "off";
+            $phpfcgi = "off";
             $ptype = "user";
             $pv = $args['package']['variables'];
             if (isset($args['package']['addons']['DISKSPACE'])) {
@@ -376,79 +356,77 @@ class PluginISPManager extends ServerPlugin
             if (isset($pv['phpfcgi']) && $pv['phpfcgi'] == 1) {
                 $phpfcgi = "on";
             }
-            $q = "name=".$args['package']['username']."&passwd=".$args['changes']['password']."&confirm=".$args['changes']['password']."&ptype=".$ptype."&ip=".$args['package']['ip']."&preset=".$args['package']['name_on_server']."&disklimit=".$pv['disklimit']."&ftplimit=".$pv['ftplimit']."&maillimit=".$pv['maillimit']."&domainlimit=".$pv['domainlimit']."&webdomainlimit=".$pv['webdomainlimit']."&maildomainlimit=".$pv['maildomainlimit']."&baselimit=".$pv['baselimit']."&baseuserlimit=".$pv['baseuserlimit']."&bandwidthlimit=".$pv['bandwidthlimit']."&ssi=".$ssi."&ssl=".$ssl."&shell=".$shell."&cgi=".$cgi."&phpfcgi=".$phpfcgi."&phpcgi=".$phpcgi."&phpmod=".$phpmod."&func=user.edit&elid=".$args['package']['username']."&sok=ok&suok=++++Ok++++";
-            $result = $this->_ISPRequest($args, $q, "xml");
+            $q = "name=" . $args['package']['username'] . "&passwd=" . $args['changes']['password'] . "&confirm=" . $args['changes']['password'] . "&ptype=" . $ptype . "&ip=" . $args['package']['ip'] . "&preset=" . $args['package']['name_on_server'] . "&disklimit=" . $pv['disklimit'] . "&ftplimit=" . $pv['ftplimit'] . "&maillimit=" . $pv['maillimit'] . "&domainlimit=" . $pv['domainlimit'] . "&webdomainlimit=" . $pv['webdomainlimit'] . "&maildomainlimit=" . $pv['maildomainlimit'] . "&baselimit=" . $pv['baselimit'] . "&baseuserlimit=" . $pv['baseuserlimit'] . "&bandwidthlimit=" . $pv['bandwidthlimit'] . "&ssi=" . $ssi . "&ssl=" . $ssl . "&shell=" . $shell . "&cgi=" . $cgi . "&phpfcgi=" . $phpfcgi . "&phpcgi=" . $phpcgi . "&phpmod=" . $phpmod . "&func=user.edit&elid=" . $args['package']['username'] . "&sok=ok&suok=++++Ok++++";
+            $result = $this->sendRequest($args, $q, "xml");
             $objXML = new xml2Array();
             $arrOutput = $objXML->parse($result);
             foreach ($arrOutput[0]['children'] as $el) {
                 if ($el['name'] == 'ERROR') {
-                    throw new CE_Exception("ISPManager error #".$el['attrs']['CODE']." in object \"".$el['attrs']['OBJ']."\"");
+                    throw new CE_Exception("ISPManager error #" . $el['attrs']['CODE'] . " in object \"" . $el['attrs']['OBJ'] . "\"");
                 }
-                if ($el['name'] == 'OK') {
-                    if (isset($el['tagData']) && $el['tagData'] == 'restart') {
-                        return $this->_ISPRestart($args);
-                    }
+                if ($el['name'] == 'OK' && (isset($el['tagData']) && $el['tagData'] == 'restart')) {
+                    return $this->restart($args);
                 }
             }
         }
         return false;
     }
 
-    function suspend($args)
+    public function suspend($args)
     {
-        $result = $this->_ISPRequest($args, "func=user.disable&elid=".$args['package']['username'], "xml");
+        $result = $this->sendRequest($args, "func=user.suspend&elid=" . $args['package']['username'], "xml");
         $objXML = new xml2Array();
         $arrOutput = $objXML->parse($result);
         foreach ($arrOutput[0]['children'] as $el) {
-            if ($el['name'] == 'OK') {
-                if ($el['tagData'] == 'restart') {
-                    return $this->_ISPRestart($args);
-                }
+            if ($el['name'] == 'OK' && $el['tagData'] == 'restart') {
+                return $this->restart($args);
             }
         }
         return false;
     }
 
-    function unsuspend($args)
+    public function unsuspend($args)
     {
-        $result = $this->_ISPRequest($args, "func=user.enable&elid=".$args['package']['username'], "xml");
+        $result = $this->sendRequest($args, "func=user.resume&elid=" . $args['package']['username'], "xml");
         $objXML = new xml2Array();
         $arrOutput = $objXML->parse($result);
         foreach ($arrOutput[0]['children'] as $el) {
-            if ($el['name'] == 'OK') {
-                if ($el['tagData'] == 'restart') {
-                    return $this->_ISPRestart($args);
-                }
+            if ($el['name'] == 'OK' && $el['tagData'] == 'restart') {
+                return $this->restart($args);
             }
         }
         return false;
     }
 
-    function doCreate($args)
+    public function doCreate($args)
     {
         $userPackage = new UserPackage($args['userPackageId']);
         $this->create($this->buildParams($userPackage));
         return $userPackage->getCustomField("Domain Name") .  ' has been created.';
     }
 
-    function doSuspend($args)
+    public function doSuspend($args)
     {
         $userPackage = new UserPackage($args['userPackageId']);
         $this->suspend($this->buildParams($userPackage));
         return $userPackage->getCustomField("Domain Name") .  ' has been suspended.';
     }
 
-    function doUnSuspend($args)
+    public function doUnSuspend($args)
     {
         $userPackage = new UserPackage($args['userPackageId']);
         $this->unsuspend($this->buildParams($userPackage));
         return $userPackage->getCustomField("Domain Name") .  ' has been unsuspended.';
     }
 
-    function doDelete($args)
+    public function doDelete($args)
     {
         $userPackage = new UserPackage($args['userPackageId']);
         $this->delete($this->buildParams($userPackage));
         return $userPackage->getCustomField("Domain Name") . ' has been deleted.';
+    }
+
+    public function doUpdate($args)
+    {
     }
 }

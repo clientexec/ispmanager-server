@@ -2,9 +2,9 @@
 
 class xml2Array {
   
-   var $arrOutput = array();
-   var $resParser;
-   var $strXmlData;
+   public $arrOutput = array();
+   public $resParser;
+   public $strXmlData;
   
    function parse($strInputXML) {
   
@@ -15,7 +15,7 @@ class xml2Array {
            xml_set_character_data_handler($this->resParser, "tagData");
       
            $this->strXmlData = xml_parse($this->resParser,$strInputXML );
-           if(!$this->strXmlData) {
+           if($this->strXmlData === 0) {
                die(sprintf("XML error: %s at line %d",
            xml_error_string(xml_get_error_code($this->resParser)),
            xml_get_current_line_number($this->resParser)));
@@ -27,11 +27,11 @@ class xml2Array {
    }
    function tagOpen($parser, $name, $attrs) {
        $tag=array("name"=>$name,"attrs"=>$attrs);
-       array_push($this->arrOutput,$tag);
+       $this->arrOutput[] = $tag;
    }
   
    function tagData($parser, $tagData) {
-       if(trim($tagData)) {
+       if(trim($tagData) !== '' && trim($tagData) !== '0') {
            if(isset($this->arrOutput[count($this->arrOutput)-1]['tagData'])) {
                $this->arrOutput[count($this->arrOutput)-1]['tagData'] .= $tagData;
            }
