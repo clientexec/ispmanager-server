@@ -20,12 +20,12 @@ class PluginISPManager extends ServerPlugin
             lang("Name") => [
                 "type" => "hidden",
                 "description" => lang("Used By CE to show plugin - must match how you call the action function names"),
-                "value" => "ISPmanager"
+                "value" => "ispmanager"
             ],
             lang("Description") => [
                 "type" => "hidden",
                 "description" => lang("Description viewable by admin in server settings"),
-                "value" => lang("ISPmanager Panel Integration")
+                "value" => lang("ispmanager Panel Integration")
             ],
             lang("Username") => [
                 "type" => "text",
